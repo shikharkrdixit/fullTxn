@@ -1,0 +1,23 @@
+title Transaction Creation
+
+actor User
+participant API Gateway
+participant Kafka
+participant Transaction Service
+participant Database
+
+User->API Gateway : Post Request [Create Transaction]
+note over API Gateway : The request contains transaction details and Employee Id
+API Gateway->Kafka : Transaction Entity Published on Kafka
+Kafka->Transaction Service : Transaction Entity Read by Transaction Service
+Transaction Service->Database:Compare Available Balance and Transaction Amount if transaction is possible or not
+alt Failure
+Transaction Service->Transaction Service : Transaction Amount Changed to Zero
+Transaction Service->Database:Transaction Entity Saved in Database
+Transaction Service->User:Notification Sent for Unsuccessful Transaction
+else Success
+Transaction Service->Database:Employee's Balance Amount Reduced w.r.t to the Transaction Amount
+Transaction Service->Database:Transaction Details saved in Database
+Transaction Service->User:Notification Sent for Successful Transaction
+end 
+

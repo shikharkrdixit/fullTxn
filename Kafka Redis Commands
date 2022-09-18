@@ -1,0 +1,13 @@
+#inside kafka_2.13..
+zookeeper : bin/zookeeper-server-start.sh config/zookeeper.properties
+server : bin/kafka-server-start.sh config/server.properties
+topic : bin/kafka-topics.sh --create --topic transactionTopic1 --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1
+
+
+
+
+#redis
+redis-server
+redis-cli
+flushdb
+sudo service redis-server stop

@@ -1,0 +1,27 @@
+title Employee Management - Create Account
+
+actor User
+participant Redis
+participant API Gateway
+participant PostgreSQL
+
+User->Redis:Fetch Employee by Id
+alt Failure
+Redis->Redis:Check if Employee Details Exist
+Redis->API Gateway : Get Request(id) to fetch details
+API Gateway->PostgreSQL:Fetch Employee
+PostgreSQL->PostgreSQL : Check if Id Exists or Not
+
+PostgreSQL->User : Id Does not Exist
+else Success
+PostgreSQL->Redis:Employee Entity
+Redis->User:Employee Details
+end
+
+User ->API Gateway : Post Request() with Employee Details in Body
+API Gateway->PostgreSQL : Insert the details in DB
+note right of PostgreSQL : Entity Insertion and Id Generation
+PostgreSQL->User : Employee Details with Id
+else Success
+PostgreSQL ->API Gateway : Success Message with Details
+API Gateway ->User : Employee Details
